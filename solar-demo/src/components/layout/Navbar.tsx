@@ -70,10 +70,7 @@ export default function Navbar() {
             </div>
             <div className="flex flex-col leading-none">
               <span className="text-sm font-semibold tracking-tight text-navy">
-                Balaji Solar
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted">
-                & Auto Cleaning
+                Go Green Solution
               </span>
             </div>
           </a>

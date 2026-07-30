@@ -1,4 +1,4 @@
-# Contributing to Balaji Solar & Auto Cleaning
+# Contributing to Go Green Solution
 
 Thank you for your interest in contributing! This document provides guidelines and instructions for contributing.
 

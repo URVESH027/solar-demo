@@ -56,10 +56,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-sm font-semibold tracking-tight text-navy">
-                  Balaji Solar
-                </span>
-                <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted">
-                  & Auto Cleaning
+                  Go Green Solution
                 </span>
               </div>
             </div>
@@ -178,7 +175,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-warm-gray pt-8 md:flex-row">
           <p className="text-xs text-muted">
-            &copy; {new Date().getFullYear()} Balaji Solar & Auto Cleaning. All
+            &copy; {new Date().getFullYear()} Go Green Solution. All
             rights reserved.
           </p>
           <div className="flex gap-6">

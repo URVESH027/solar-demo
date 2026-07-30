@@ -19,7 +19,7 @@ const inter = Inter({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://balajisolar.in";
 const phone = process.env.NEXT_PUBLIC_PHONE || "+919999999999";
 const email = process.env.NEXT_PUBLIC_EMAIL || "info@balajisolar.in";
-const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "Balaji Solar & Auto Cleaning";
+const businessName = process.env.NEXT_PUBLIC_BUSINESS_NAME || "Go Green Solution";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     "residential solar",
     "commercial solar",
     "Delhi NCR solar",
-    "Balaji Solar",
+    "Go Green Solution",
   ],
   authors: [{ name: businessName }],
   creator: businessName,

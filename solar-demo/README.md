@@ -1,4 +1,4 @@
-# Balaji Solar & Auto Cleaning
+# Go Green Solution
 
 Premium solar installations and panel cleaning services that protect your investment for 25 years.
 
@@ -85,7 +85,7 @@ npm run build       # Production build
 | `NEXT_PUBLIC_EMAIL` | Business email | `info@balajisolar.in` |
 | `NEXT_PUBLIC_WHATSAPP` | WhatsApp number (no +) | `919999999999` |
 | `NEXT_PUBLIC_ADDRESS` | Business address | `Delhi NCR, India` |
-| `NEXT_PUBLIC_COMPANY_NAME` | Business name | `Balaji Solar & Auto Cleaning` |
+| `NEXT_PUBLIC_COMPANY_NAME` | Business name | `Go Green Solution` |
 | `NEXT_PUBLIC_FACEBOOK` | Facebook profile URL | — |
 | `NEXT_PUBLIC_INSTAGRAM` | Instagram profile URL | — |
 | `NEXT_PUBLIC_LINKEDIN` | LinkedIn profile URL | — |

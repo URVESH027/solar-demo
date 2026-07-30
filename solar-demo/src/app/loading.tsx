@@ -16,10 +16,7 @@ export default function Loading() {
       </div>
       <div className="mt-6 text-center">
         <div className="text-sm font-semibold tracking-tight text-white">
-          Balaji Solar
-        </div>
-        <div className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
-          &amp; Auto Cleaning
+          Go Green Solution
         </div>
       </div>
     </div>

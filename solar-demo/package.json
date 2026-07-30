@@ -2,7 +2,7 @@
   "name": "balaji-solar",
   "version": "1.0.0",
   "private": true,
-  "description": "Premium solar installations and panel cleaning services website — Balaji Solar & Auto Cleaning",
+  "description": "Premium solar installations and panel cleaning services website — Go Green Solution",
   "keywords": [
     "solar",
     "solar-installation",
@@ -12,7 +12,7 @@
     "tailwindcss",
     "framer-motion"
   ],
-  "author": "Balaji Solar & Auto Cleaning",
+  "author": "Go Green Solution",
   "license": "MIT",
   "homepage": "https://balajisolar.in",
   "repository": {
