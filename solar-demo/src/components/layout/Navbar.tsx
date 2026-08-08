@@ -5,12 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Phone } from "lucide-react";
 import CTAButton from "@/components/ui/CTAButton";
 
+const NAVBAR_HEIGHT = 72;
+
 const navLinks = [
   { label: "Services", href: "#services" },
   { label: "Projects", href: "#projects" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ] as const;
+
+function scrollToAnchor(href: string) {
+  const el = document.querySelector(href);
+  if (!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - NAVBAR_HEIGHT;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,25 +47,37 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  const bgAlpha = 0.92 * scrollProgress;
-  const blurAmount = Math.round(12 * scrollProgress);
-  const borderAlpha = 0.5 * scrollProgress;
+  // Handle hash on initial load
+  useEffect(() => {
+    if (window.location.hash) {
+      const timer = setTimeout(() => {
+        scrollToAnchor(window.location.hash);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const bgAlpha = 0.88 * scrollProgress;
+  const blurAmount = Math.round(20 * scrollProgress);
+  const borderAlpha = 0.4 * scrollProgress;
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 h-16 transition-colors duration-300 md:h-[72px]"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
+          height: scrollProgress > 0 ? "64px" : `${NAVBAR_HEIGHT}px`,
           backgroundColor: `rgba(255,255,255,${bgAlpha})`,
-          backdropFilter: `blur(${blurAmount}px)`,
-          WebkitBackdropFilter: `blur(${blurAmount}px)`,
+          backdropFilter: `blur(${blurAmount}px) saturate(180%)`,
+          WebkitBackdropFilter: `blur(${blurAmount}px) saturate(180%)`,
           borderBottom: `1px solid rgba(226,232,240,${borderAlpha})`,
+          boxShadow: scrollProgress > 0 ? `0 1px 12px rgba(10,22,40,${0.03 * scrollProgress})` : "none",
         }}
       >
         <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-12">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-gold/10">
+          <a href="#" className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gold/10 border border-gold/15 transition-all duration-300 hover:bg-gold/15 hover:border-gold/25 hover:shadow-[0_0_0_3px_rgba(212,168,67,0.06)]">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -69,22 +90,25 @@ export default function Navbar() {
               </svg>
             </div>
             <div className="flex flex-col leading-none">
-              <span className="text-sm font-semibold tracking-tight text-navy">
+              <span className="text-[15px] font-semibold tracking-tight text-navy">
                 Go Green Solution
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden items-center gap-8 md:flex">
+          <div className="hidden items-center gap-10 md:flex">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="group relative py-1 text-sm font-medium text-navy/70 transition-colors duration-200 hover:text-navy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToAnchor(link.href);
+                }}
+                className="nav-link-premium py-1 text-[13px] font-medium"
               >
                 {link.label}
-                <span className="absolute -bottom-0.5 left-0 h-0.5 w-0 rounded-full bg-gold transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
           </div>
@@ -93,9 +117,9 @@ export default function Navbar() {
           <div className="hidden items-center gap-4 md:flex">
             <a
               href={`tel:${process.env.NEXT_PUBLIC_PHONE || "+919999999999"}`}
-              className="flex items-center gap-1.5 text-sm font-medium text-navy/60 transition-colors hover:text-navy"
+              className="group flex items-center gap-1.5 text-[13px] font-medium text-navy/50 transition-colors duration-300 hover:text-navy"
             >
-              <Phone className="h-3.5 w-3.5" />
+              <Phone className="h-3.5 w-3.5 transition-transform duration-300 group-hover:scale-110" />
               <span className="hidden lg:inline">{process.env.NEXT_PUBLIC_PHONE_DISPLAY || "+91 99999 99999"}</span>
             </a>
             <CTAButton label="Get Free Quote" href="#quote" icon={false} />
@@ -104,7 +128,7 @@ export default function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="flex h-10 w-10 items-center justify-center rounded-sm text-navy transition-colors hover:bg-cloud md:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-navy transition-all duration-300 hover:bg-cloud active:scale-95 md:hidden"
             aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -134,12 +158,12 @@ export default function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-0 right-0 bottom-0 z-50 w-[80vw] max-w-sm border-l border-warm-gray bg-white shadow-2xl md:hidden"
+            className="fixed top-0 right-0 bottom-0 z-50 w-[80vw] max-w-sm border-l border-warm-gray bg-white/95 backdrop-blur-xl shadow-2xl md:hidden"
           >
             <div className="flex h-16 items-center justify-end px-6">
               <button
                 onClick={() => setIsOpen(false)}
-                className="flex h-10 w-10 items-center justify-center rounded-sm text-navy transition-colors hover:bg-cloud"
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-navy transition-all duration-300 hover:bg-cloud active:scale-95"
                 aria-label="Close menu"
               >
                 <X className="h-5 w-5" />
@@ -154,10 +178,16 @@ export default function Navbar() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 + 0.1 }}
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-sm px-4 py-3 text-base font-medium text-navy transition-colors hover:bg-cloud"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsOpen(false);
+                    setTimeout(() => scrollToAnchor(link.href), 300);
+                  }}
+                  className="group relative rounded-xl px-4 py-3.5 text-base font-medium text-navy transition-all duration-300 hover:bg-cloud active:scale-[0.98]"
                 >
-                  {link.label}
+                  <span className="relative z-10">{link.label}</span>
+                  {/* Gold accent bar on hover */}
+                  <span className="absolute left-0 top-1/2 h-0 w-0.5 -translate-y-1/2 rounded-full bg-gold opacity-0 transition-all duration-300 group-hover:h-5 group-hover:opacity-100" />
                 </motion.a>
               ))}
             </div>
@@ -165,7 +195,7 @@ export default function Navbar() {
             <div className="mt-8 border-t border-warm-gray px-6 pt-6">
               <a
                 href={`tel:${process.env.NEXT_PUBLIC_PHONE || "+919999999999"}`}
-                className="mb-4 flex items-center gap-2 text-sm text-slate"
+                className="mb-4 flex items-center gap-2 text-sm text-slate transition-colors duration-300 hover:text-navy"
               >
                 <Phone className="h-4 w-4" />
                 {process.env.NEXT_PUBLIC_PHONE_DISPLAY || "+91 99999 99999"}

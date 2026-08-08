@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { easeOutExpo } from "@/lib/animations";
+import { cardEntrance, inViewConfig } from "@/lib/motion-variants";
 import type { LucideIcon } from "lucide-react";
 
 interface BentoCardProps {
@@ -29,50 +29,83 @@ export default function BentoCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, ease: easeOutExpo, delay: index * 0.07 }}
-      className={`group relative ${spanStyles[span]}`}
+      variants={cardEntrance}
+      initial="hidden"
+      whileInView="visible"
+      viewport={inViewConfig.standard}
+      transition={{ delay: index * 0.07 }}
+      className={`group relative cursor-default ${spanStyles[span]}`}
     >
-      {/* Ambient glow */}
-      <div className="absolute -inset-1 rounded-sm opacity-0 blur-sm transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.06) 0%, transparent 70%)" }}
+      {/* Ambient glow on hover */}
+      <div className="absolute -inset-3 rounded-3xl opacity-0 blur-xl transition-all duration-700 group-hover:opacity-100"
+        style={{ background: "radial-gradient(ellipse at 50% 20%, rgba(212,168,67,0.1) 0%, transparent 70%)" }}
       />
 
-      <div className="relative flex h-full flex-col overflow-hidden rounded-sm border border-white/[0.06] bg-white/[0.03] p-7 transition-all duration-500 hover:border-white/[0.12] hover:bg-white/[0.05] md:p-8"
+      <div className="relative flex h-full flex-col overflow-hidden rounded-3xl p-8 transition-all duration-500 group-hover:-translate-y-0.5 md:p-9"
         style={{
           background: "linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)",
+          border: "1px solid rgba(255,255,255,0.06)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
         }}
       >
-        {/* Top glow line */}
-        <div className="pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/0 to-transparent transition-all duration-500 group-hover:via-gold/20" />
+        {/* Hover border transition — brighter gold accent */}
+        <div className="pointer-events-none absolute inset-0 rounded-3xl border border-transparent transition-all duration-500 group-hover:border-white/[0.12]" />
 
-        {/* Surface sheen */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-[30%] bg-gradient-to-b from-white/[0.04] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+        {/* Top glow line — appears on hover */}
+        <div className="pointer-events-none absolute top-0 left-0 h-px w-full transition-all duration-700"
+          style={{
+            background: "linear-gradient(90deg, transparent 10%, rgba(212,168,67,0) 50%, transparent 90%)",
+          }}
+        />
+        <div className="pointer-events-none absolute top-0 left-0 h-px w-full opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+          style={{
+            background: "linear-gradient(90deg, transparent 10%, rgba(212,168,67,0.3) 50%, transparent 90%)",
+          }}
+        />
 
-        {/* Icon */}
-        <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-500 group-hover:bg-gold/10 group-hover:shadow-[0_0_0_4px_rgba(212,168,67,0.06)]"
-          style={{ background: "rgba(255,255,255,0.05)" }}
+        {/* Surface sheen — premium depth */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[40%] opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 100%)",
+          }}
+      />
+
+        {/* Glass reflection sweep */}
+        <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+          style={{
+            background: "linear-gradient(165deg, rgba(255,255,255,0.04) 0%, transparent 40%)",
+          }}
+        />
+
+        {/* Icon in glass circle — refined hover */}
+        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-500"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.06)",
+          }}
         >
-          <Icon className="h-5 w-5 text-white/30 transition-all duration-500 group-hover:text-gold group-hover:scale-110" />
+          <div className="transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_10px_rgba(212,168,67,0.35)]">
+            <Icon className="h-5 w-5 text-white/30 transition-colors duration-500 group-hover:text-gold" />
+          </div>
         </div>
 
         {/* Label */}
-        <span className="mb-2 text-[10px] font-medium uppercase tracking-[0.1em] text-white/30">
+        <span className="mb-2.5 text-[10px] font-medium uppercase tracking-[0.1em] text-white/30 transition-colors duration-500 group-hover:text-white/55">
           {label}
         </span>
 
         {/* Title */}
-        <h3 className="mb-2 font-display text-lg font-bold tracking-[-0.01em] text-white md:text-xl">
+        <h3 className="mb-3 font-display text-lg font-bold tracking-[-0.01em] text-white md:text-xl transition-colors duration-500 group-hover:text-white">
           {title}
         </h3>
 
         {/* Description */}
-        <p className="text-sm leading-relaxed text-white/40">{description}</p>
+        <p className="text-sm leading-relaxed text-white/40 transition-colors duration-500 group-hover:text-white/60">{description}</p>
 
-        {/* Bottom accent line */}
-        <div className="mt-auto h-px w-0 bg-gold/20 transition-all duration-700 group-hover:w-full" />
+        {/* Bottom accent line — grows on hover */}
+        <div className="mt-auto">
+          <div className="h-px w-0 bg-gradient-to-r from-gold/0 via-gold/30 to-gold/0 transition-all duration-700 group-hover:w-full" />
+        </div>
       </div>
     </motion.div>
   );

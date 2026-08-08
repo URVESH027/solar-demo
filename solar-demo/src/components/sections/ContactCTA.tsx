@@ -3,7 +3,11 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Phone, ArrowRight, ShieldCheck, Clock, BadgeCheck } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
+import {
+  contactCta,
+  staggerSlow,
+  inViewConfig,
+} from "@/lib/motion-variants";
 import CTAButton from "@/components/ui/CTAButton";
 
 const trustBadges = [
@@ -14,88 +18,93 @@ const trustBadges = [
 
 export default function ContactCTA() {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, inViewConfig.standard);
 
   return (
     <section
       ref={ref}
       id="contact"
-      className="relative overflow-hidden bg-navy py-24 md:py-32"
+      className="relative overflow-hidden bg-navy py-32 md:py-44 surface-navy-deep"
     >
-      {/* Animated background glows */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-gold/[0.03] blur-[150px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-gold/[0.015] blur-[120px]" />
+      {/* Layered background glows — premium depth */}
+      <div className="pointer-events-none absolute top-0 left-1/4 h-[700px] w-[700px] rounded-full blur-[200px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 50%)" }}
+      />
+      <div className="pointer-events-none absolute right-0 bottom-0 h-[600px] w-[600px] rounded-full blur-[180px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.03) 0%, transparent 50%)" }}
+      />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[120px]"
+        style={{ background: "radial-gradient(circle, rgba(255,255,255,0.015) 0%, transparent 50%)" }}
+      />
+
+      {/* Top accent line */}
+      <div className="pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center">
-          {/* Section label */}
+        <motion.div
+          variants={staggerSlow}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mx-auto max-w-3xl text-center"
+        >
+          {/* Section label — first to appear */}
           <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, ease: easeOutExpo }}
-            className="mb-4 text-[11px] font-medium uppercase tracking-[0.12em] text-white/60"
+            variants={contactCta.badge}
+            className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-white/60"
           >
             Get Started
           </motion.span>
 
-          {/* Headline */}
+          {/* Headline — second */}
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, ease: easeOutExpo, delay: 0.1 }}
-            className="mx-auto max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl"
+            variants={contactCta.heading}
+            className="font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl"
             style={{ textWrap: "balance" }}
           >
             Ready to own your power?
           </motion.h2>
 
-          {/* Subtext */}
+          {/* Subtext — third */}
           <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, ease: easeOutExpo, delay: 0.2 }}
-            className="mt-5 max-w-md text-base leading-relaxed text-white/50"
+            variants={contactCta.paragraph}
+            className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/50"
           >
             Get a free consultation and custom solar design for your home or
             business. No obligations, no pressure — just honest advice.
           </motion.p>
 
-          {/* CTAs */}
+          {/* CTAs — fourth */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, ease: easeOutExpo, delay: 0.3 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-4"
+            variants={contactCta.buttons}
+            className="mt-10 flex flex-wrap items-center justify-center gap-4"
           >
             <CTAButton label="Get Free Quote" href="#contact" />
             <a
               href="tel:+919999999999"
-              className="group inline-flex items-center gap-2 rounded border border-white/20 px-6 py-3 text-base font-medium text-white transition-all duration-300 hover:border-gold/40 hover:text-gold"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/20 px-6 py-3.5 text-base font-medium text-white transition-all duration-400 hover:border-gold/40 hover:text-gold hover:bg-white/[0.03] hover:shadow-[0_0_20px_rgba(212,168,67,0.12)] active:scale-[0.98]"
             >
-              <Phone className="h-4 w-4" />
+              <Phone className="h-4 w-4 transition-transform duration-300 group-hover:scale-110" />
               Call Now
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-400 group-hover:translate-x-1" />
             </a>
           </motion.div>
 
-          {/* Trust Badges */}
+          {/* Trust Badges — fifth, last to appear */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, ease: easeOutExpo, delay: 0.45 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-6"
+            variants={contactCta.trust}
+            className="mt-14 flex flex-wrap items-center justify-center gap-10"
           >
             {trustBadges.map((badge) => (
               <div
                 key={badge.label}
-                className="flex items-center gap-2 text-sm text-white/40"
+                className="flex items-center gap-2.5 text-sm text-white/40 transition-all duration-300 hover:text-white/60"
               >
-                <badge.icon className="h-4 w-4 text-gold/60" />
+                <badge.icon className="h-4 w-4 text-gold/60 transition-all duration-300 hover:text-gold/80 hover:scale-110" />
                 {badge.label}
               </div>
             ))}
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

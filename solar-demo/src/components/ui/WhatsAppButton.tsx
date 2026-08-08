@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
-import { easeOutBack } from "@/lib/animations";
+import { springTransition } from "@/lib/motion-variants";
 
 export default function WhatsAppButton() {
   const [visible, setVisible] = useState(false);
@@ -24,7 +24,7 @@ export default function WhatsAppButton() {
         aria-label="Chat on WhatsApp"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ duration: 0.4, ease: easeOutBack }}
+        transition={springTransition(200, 15)}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.95 }}
         className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] shadow-[0_4px_14px_rgba(37,211,102,0.35)]"

@@ -10,7 +10,12 @@ import {
   FileCheck,
   Battery,
 } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
+import {
+  fadeUp,
+  slideUp,
+  staggerMedium,
+  inViewConfig,
+} from "@/lib/motion-variants";
 import ServiceCard from "./ServiceCard";
 
 const services = [
@@ -25,6 +30,7 @@ const services = [
       "Net metering setup included",
       "25-year performance warranty",
     ],
+    featured: true,
   },
   {
     icon: Droplets,
@@ -90,39 +96,76 @@ const services = [
 
 export default function Services() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const isInView = useInView(sectionRef, inViewConfig.standard);
+
+  const featured = services[0];
+  const rest = services.slice(1);
 
   return (
-    <section ref={sectionRef} className="relative py-28 md:py-36">
+    <section ref={sectionRef} className="relative py-32 md:py-44 section-identity-services">
+      {/* Decorative background — warm top gradient */}
+      <div className="pointer-events-none absolute top-0 left-0 right-0 h-[400px]"
+        style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,168,67,0.04) 0%, transparent 60%)" }}
+      />
+      <div className="pointer-events-none absolute top-1/4 right-0 h-[500px] w-[500px] rounded-full bg-gold/[0.02] blur-[160px]" />
+
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — left-aligned for editorial feel */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
-          className="mb-14 md:mb-16"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mb-20 md:mb-24"
         >
-          <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
+          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
             Our Services
           </span>
-          <h2 className="max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl">
-            Everything your solar system needs
-          </h2>
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl">
+              Everything your solar system needs
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-slate lg:text-right">
+              From installation to maintenance, we provide end-to-end solar solutions backed by 10+ years of expertise.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Service Cards Grid */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, i) => (
+        {/* Featured Service — large hero card */}
+        <motion.div
+          variants={slideUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          transition={{ delay: 0.15 }}
+          className="mb-8"
+        >
+          <ServiceCard
+            icon={featured.icon}
+            title={featured.title}
+            description={featured.description}
+            features={featured.features}
+            index={0}
+            featured
+          />
+        </motion.div>
+
+        {/* Remaining Services — 2x2 offset grid */}
+        <motion.div
+          variants={staggerMedium}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {rest.map((service, i) => (
             <ServiceCard
               key={service.title}
               icon={service.icon}
               title={service.title}
               description={service.description}
               features={service.features}
-              index={i}
+              index={i + 1}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

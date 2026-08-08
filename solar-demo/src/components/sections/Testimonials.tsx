@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { easeOutExpo } from "@/lib/animations";
+import { fadeUp, staggerSlow, inViewConfig } from "@/lib/motion-variants";
 import TestimonialCard from "./TestimonialCard";
 
 const testimonials = [
@@ -64,36 +64,48 @@ const testimonials = [
 
 export default function Testimonials() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const isInView = useInView(sectionRef, inViewConfig.standard);
 
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-cloud py-24 md:py-32"
+      className="relative overflow-hidden bg-cloud py-32 md:py-44 section-identity-testimonials"
     >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/[0.02] blur-[150px]" />
+      {/* Background glow — soft centered */}
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[180px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 50%)" }}
+      />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — left-aligned for editorial feel */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
-          className="mb-14 text-center md:mb-16"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mb-16 md:mb-20"
         >
-          <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
+          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
             What Clients Say
           </span>
-          <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
-            What our customers say
-          </h2>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
+              Trusted by hundreds of homeowners
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-slate lg:text-right">
+              Real results from real customers across India.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Masonry-style Grid */}
-        <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
+        {/* Masonry Grid with varied card sizes */}
+        <motion.div
+          variants={staggerSlow}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="columns-1 gap-6 sm:columns-2 lg:columns-3"
+        >
           {testimonials.map((t, i) => (
-            <div key={t.name} className="mb-5 break-inside-avoid">
+            <div key={t.name} className="mb-6 break-inside-avoid">
               <TestimonialCard
                 name={t.name}
                 location={t.location}
@@ -102,10 +114,11 @@ export default function Testimonials() {
                 rating={t.rating}
                 image={t.image}
                 index={i}
+                featured={i === 0 || i === 3}
               />
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

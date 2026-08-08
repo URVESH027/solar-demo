@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Sun, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { easeOutExpo } from "@/lib/animations";
+import { fadeUp, ease, duration } from "@/lib/motion-variants";
 
 export default function NotFound() {
   return (
@@ -12,9 +12,9 @@ export default function NotFound() {
       <div className="pointer-events-none absolute top-1/3 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/[0.04] blur-[150px]" />
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: easeOutExpo }}
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
         className="relative flex flex-col items-center text-center"
         role="alert"
       >
@@ -36,7 +36,7 @@ export default function NotFound() {
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.6, ease: easeOutExpo }}
+          transition={{ delay: 0.15, duration: duration.medium, ease: ease.standard }}
           className="font-display text-7xl font-bold text-white md:text-8xl"
         >
           404
@@ -46,7 +46,7 @@ export default function NotFound() {
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.6, ease: easeOutExpo }}
+          transition={{ delay: 0.25, duration: duration.medium, ease: ease.standard }}
           className="mt-4 max-w-sm text-base text-white/50"
         >
           This page doesn&apos;t exist. It may have been moved or the link might
@@ -57,7 +57,7 @@ export default function NotFound() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.6, ease: easeOutExpo }}
+          transition={{ delay: 0.35, duration: duration.medium, ease: ease.standard }}
           className="mt-8"
         >
           <Link

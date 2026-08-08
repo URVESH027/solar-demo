@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { easeOutExpo } from "@/lib/animations";
+import { ease, duration, inViewConfig } from "@/lib/motion-variants";
 import type { LucideIcon } from "lucide-react";
 
 interface TimelineStepProps {
@@ -21,7 +21,7 @@ export default function TimelineStep({
   totalSteps,
 }: TimelineStepProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const isInView = useInView(ref, inViewConfig.early);
 
   return (
     <div ref={ref} className="group relative flex flex-col items-center text-center">
@@ -32,8 +32,8 @@ export default function TimelineStep({
             initial={{ scaleX: 0 }}
             animate={isInView ? { scaleX: 1 } : {}}
             transition={{
-              duration: 0.8,
-              ease: easeOutExpo,
+              duration: duration.slow,
+              ease: ease.standard,
               delay: 0.3 + step * 0.15,
             }}
             className="h-full w-full origin-left bg-gold/40"
@@ -48,8 +48,8 @@ export default function TimelineStep({
             initial={{ scaleY: 0 }}
             animate={isInView ? { scaleY: 1 } : {}}
             transition={{
-              duration: 0.8,
-              ease: easeOutExpo,
+              duration: duration.slow,
+              ease: ease.standard,
               delay: 0.3 + step * 0.15,
             }}
             className="h-full w-full origin-top bg-gold/40"
@@ -62,15 +62,15 @@ export default function TimelineStep({
         initial={{ opacity: 0, scale: 0.6 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{
-          duration: 0.5,
-          ease: easeOutExpo,
+          duration: duration.medium,
+          ease: ease.standard,
           delay: 0.15 + step * 0.12,
         }}
-        className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-full border-2 border-warm-gray bg-white transition-all duration-500 group-hover:border-gold group-hover:bg-gold/5 group-hover:shadow-[0_0_0_6px_rgba(212,168,67,0.08)] md:mb-6"
+        className="relative z-10 mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-warm-gray bg-white transition-all duration-500 group-hover:border-gold group-hover:bg-gold/5 group-hover:shadow-[0_0_0_6px_rgba(212,168,67,0.08)] md:mb-7"
       >
         <Icon className="h-6 w-6 text-navy/50 transition-all duration-500 group-hover:text-gold group-hover:scale-110" />
         {/* Step number badge */}
-        <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-gold text-[10px] font-bold text-navy shadow-[0_2px_6px_rgba(212,168,67,0.3)]">
+        <span className="absolute -top-1.5 -right-1.5 flex h-5.5 w-5.5 items-center justify-center rounded-full bg-gold text-[10px] font-bold text-navy shadow-[0_2px_8px_rgba(212,168,67,0.3)]">
           {step}
         </span>
       </motion.div>
@@ -80,8 +80,8 @@ export default function TimelineStep({
         initial={{ opacity: 0, y: 16 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{
-          duration: 0.5,
-          ease: easeOutExpo,
+          duration: duration.medium,
+          ease: ease.standard,
           delay: 0.25 + step * 0.12,
         }}
       >

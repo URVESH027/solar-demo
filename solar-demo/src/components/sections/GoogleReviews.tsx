@@ -9,7 +9,13 @@ import {
   animate,
 } from "framer-motion";
 import { Star, BadgeCheck } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
+import {
+  fadeUp,
+  slideUp,
+  staggerMedium,
+  inViewConfig,
+  ease,
+} from "@/lib/motion-variants";
 
 const highlights = [
   "Professional installation team",
@@ -21,13 +27,13 @@ const highlights = [
 
 function AnimatedDecimal({ target }: { target: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const isInView = useInView(ref, inViewConfig.early);
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => v.toFixed(1));
 
   useEffect(() => {
     if (isInView) {
-      animate(count, target, { duration: 2, ease: easeOutExpo });
+      animate(count, target, { duration: 2, ease: ease.standard });
     }
   }, [isInView, count, target]);
 
@@ -43,13 +49,13 @@ function AnimatedDecimal({ target }: { target: number }) {
 
 function AnimatedInt({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const isInView = useInView(ref, inViewConfig.early);
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => Math.round(v));
 
   useEffect(() => {
     if (isInView) {
-      animate(count, target, { duration: 2, ease: easeOutExpo });
+      animate(count, target, { duration: 2, ease: ease.standard });
     }
   }, [isInView, count, target]);
 
@@ -65,94 +71,105 @@ function AnimatedInt({ target, suffix = "" }: { target: number; suffix?: string 
 
 export default function GoogleReviews() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const isInView = useInView(sectionRef, inViewConfig.standard);
 
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-navy py-24 md:py-32"
+      className="relative overflow-hidden bg-navy py-32 md:py-44"
     >
-      {/* Background glows */}
-      <div className="pointer-events-none absolute top-0 left-1/4 h-[400px] w-[400px] rounded-full bg-gold/[0.02] blur-[150px]" />
-      <div className="pointer-events-none absolute bottom-0 right-1/4 h-[300px] w-[300px] rounded-full bg-gold/[0.015] blur-[120px]" />
+      {/* Background glows — deeper with layered gold */}
+      <div className="pointer-events-none absolute top-0 left-1/4 h-[600px] w-[600px] rounded-full blur-[180px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 50%)" }}
+      />
+      <div className="pointer-events-none absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full blur-[150px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 50%)" }}
+      />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — left-aligned editorial */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
-          className="mb-14 text-center md:mb-16"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mb-16 md:mb-20"
         >
-          <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-white/60">
-            Trusted on Google
+          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-white/60">
+            Social Proof
           </span>
-          <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
-            Rated 4.9 on Google
-          </h2>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl">
+              Trusted by hundreds of homeowners
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-white/40 lg:text-right">
+              Our reputation speaks through the voices of satisfied customers across India.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Main Card */}
+        {/* Full-width showcase card */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: easeOutExpo, delay: 0.15 }}
-          className="mx-auto max-w-3xl"
+          variants={slideUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          transition={{ delay: 0.15 }}
         >
-          <div className="relative overflow-hidden rounded-sm border border-white/10 bg-white/5 p-8 backdrop-blur-sm md:p-10">
-            {/* Top glow */}
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm">
+            {/* Top accent */}
             <div className="pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/25 to-transparent" />
 
-            <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12">
-              {/* Left — Rating */}
-              <div className="flex flex-col items-center text-center md:items-start md:text-left">
-                <div className="mb-2 flex gap-1">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left — Large rating showcase */}
+              <div className="relative flex flex-col items-center justify-center p-8 md:p-12 lg:w-[380px] lg:shrink-0">
+                {/* Gold accent blur */}
+                <div className="pointer-events-none absolute top-1/2 left-1/2 h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold/[0.06] blur-[60px]" />
+
+                <div className="mb-4 flex gap-1">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
-                      className="h-6 w-6 fill-gold text-gold md:h-7 md:w-7"
+                      className="h-7 w-7 fill-gold text-gold md:h-8 md:w-8"
                     />
                   ))}
                 </div>
-                <div className="mb-1 font-display text-5xl font-bold text-white md:text-6xl">
+                <div className="mb-2 font-display text-6xl font-bold text-white md:text-7xl">
                   <AnimatedDecimal target={4.9} />
                 </div>
-                <div className="mb-3 text-sm text-white/50">
+                <div className="mb-6 text-sm text-white/40">
                   out of 5 stars
                 </div>
-                <div className="flex items-center gap-2 text-sm text-white/70">
+                <div className="flex items-center gap-2 text-sm text-white/60">
                   <BadgeCheck className="h-4 w-4 text-gold" />
-                  <AnimatedInt target={247} suffix=" reviews" />
+                  <AnimatedInt target={247} suffix=" verified reviews" />
                 </div>
               </div>
 
               {/* Divider */}
-              <div className="hidden h-32 w-px bg-white/10 md:block" />
-              <div className="h-px w-full bg-white/10 md:hidden" />
+              <div className="hidden w-px bg-white/[0.08] lg:block" />
+              <div className="h-px w-full bg-white/[0.08] lg:hidden" />
 
-              {/* Right — Highlights */}
-              <div className="flex-1">
-                <p className="mb-4 text-xs font-medium uppercase tracking-[0.1em] text-white/40">
+              {/* Right — Highlights list, staggered */}
+              <div className="flex-1 p-8 md:p-12">
+                <p className="mb-6 text-xs font-medium uppercase tracking-[0.1em] text-white/40">
                   What customers mention most
                 </p>
-                <ul className="flex flex-col gap-3">
-                  {highlights.map((item, i) => (
+                <motion.ul
+                  variants={staggerMedium}
+                  initial="hidden"
+                  animate={isInView ? "visible" : "hidden"}
+                  className="flex flex-col gap-5"
+                >
+                  {highlights.map((item) => (
                     <motion.li
                       key={item}
-                      initial={{ opacity: 0, x: 16 }}
-                      animate={isInView ? { opacity: 1, x: 0 } : {}}
-                      transition={{
-                        duration: 0.5,
-                        ease: easeOutExpo,
-                        delay: 0.4 + i * 0.08,
-                      }}
-                      className="flex items-center gap-3 text-sm text-white/70"
+                      variants={fadeUp}
+                      className="flex items-center gap-4 text-base text-white/70"
                     >
-                      <span className="h-1 w-1 shrink-0 rounded-full bg-gold" />
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
                       {item}
                     </motion.li>
                   ))}
-                </ul>
+                </motion.ul>
               </div>
             </div>
           </div>

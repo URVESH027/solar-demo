@@ -10,7 +10,13 @@ import {
   Zap,
   Headphones,
 } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
+import {
+  fadeUp,
+  staggerMedium,
+  counterTrigger,
+  inViewConfig,
+  ease,
+} from "@/lib/motion-variants";
 import BentoCard from "./BentoCard";
 
 const reasons = [
@@ -59,9 +65,16 @@ const reasons = [
   },
 ];
 
+const stats = [
+  { value: 700, suffix: "+", label: "Installations" },
+  { value: 10, suffix: "+", label: "Years Experience" },
+  { value: 25, suffix: "yr", label: "Panel Warranty" },
+  { value: 98, suffix: "%", label: "Client Satisfaction" },
+];
+
 function AnimatedCounter({ target }: { target: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const isInView = useInView(ref, inViewConfig.early);
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => Math.round(v));
 
@@ -69,7 +82,7 @@ function AnimatedCounter({ target }: { target: number }) {
     if (isInView) {
       animate(count, target, {
         duration: 2,
-        ease: easeOutExpo,
+        ease: ease.standard,
       });
     }
   }, [isInView, count, target]);
@@ -88,60 +101,73 @@ function AnimatedCounter({ target }: { target: number }) {
 
 export default function WhyChoose() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const isInView = useInView(sectionRef, inViewConfig.standard);
 
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-navy py-24 md:py-32"
+      className="relative overflow-hidden bg-navy py-32 md:py-44 section-identity-whychoose"
     >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute top-0 right-0 h-[500px] w-[500px] rounded-full bg-gold/[0.02] blur-[150px]" />
-      <div className="pointer-events-none absolute bottom-0 left-0 h-[400px] w-[400px] rounded-full bg-gold/[0.015] blur-[120px]" />
+      {/* Background glow — deeper with gold accent */}
+      <div className="pointer-events-none absolute top-0 right-0 h-[600px] w-[600px] rounded-full blur-[180px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.06) 0%, transparent 60%)" }}
+      />
+      <div className="pointer-events-none absolute bottom-0 left-0 h-[500px] w-[500px] rounded-full blur-[150px]"
+        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.03) 0%, transparent 60%)" }}
+      />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
-          className="mb-14 md:mb-16"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mb-16 md:mb-20"
         >
-          <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-white/60">
+          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-white/60">
             Why Balaji
           </span>
-          <h2 className="max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl">
-            The difference is in the details
-          </h2>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl">
+              The difference is in the details
+            </h2>
+            <p className="max-w-sm text-sm leading-relaxed text-white/40 lg:text-right">
+              A decade of expertise, hundreds of satisfied customers, and the best components in the industry.
+            </p>
+          </div>
         </motion.div>
 
-        {/* Stats Row */}
+        {/* Stats Row — individual glass cards */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo, delay: 0.2 }}
-          className="mb-12 grid grid-cols-2 gap-6 md:mb-16 md:grid-cols-4 md:gap-8"
+          variants={staggerMedium}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="mb-16 grid grid-cols-2 gap-4 md:mb-20 md:grid-cols-4 md:gap-5"
         >
-          {[
-            { value: 700, suffix: "+", label: "Installations" },
-            { value: 10, suffix: "+", label: "Years Experience" },
-            { value: 25, suffix: "yr", label: "Panel Warranty" },
-            { value: 98, suffix: "%", label: "Client Satisfaction" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="mb-1 font-display text-3xl font-bold text-gold md:text-4xl">
+          {stats.map((stat) => (
+            <motion.div
+              key={stat.label}
+              variants={counterTrigger}
+              className="group rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 text-center transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.05] md:p-6"
+            >
+              <div className="mb-2 font-display text-3xl font-bold text-gold md:text-4xl">
                 <AnimatedCounter target={stat.value} />
                 {stat.suffix}
               </div>
               <div className="text-xs font-medium uppercase tracking-[0.08em] text-white/40">
                 {stat.label}
               </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
 
-        {/* Bento Grid */}
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
+        {/* Bento Grid — varied spans */}
+        <motion.div
+          variants={staggerMedium}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          className="grid gap-5 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3"
+        >
           {reasons.map((reason, i) => (
             <BentoCard
               key={reason.title}
@@ -153,7 +179,7 @@ export default function WhyChoose() {
               index={i}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

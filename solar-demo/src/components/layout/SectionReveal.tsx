@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion, type TargetAndTransition } from "framer-motion";
-import { easeOutExpo } from "@/lib/animations";
+import { ease, duration, inViewConfig } from "@/lib/motion-variants";
 
 type RevealVariant = "fade" | "slide-up" | "slide-left" | "slide-right" | "scale" | "mask";
 
@@ -73,10 +73,10 @@ export default function SectionReveal({
     <motion.div
       initial={shouldReduceMotion ? reducedMotionStyle : styles.initial}
       whileInView={shouldReduceMotion ? reducedMotionStyle : styles.whileInView}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={inViewConfig.standard}
       transition={{
-        duration: 0.8,
-        ease: easeOutExpo,
+        duration: duration.slow,
+        ease: ease.standard,
         delay,
       }}
       className={className}

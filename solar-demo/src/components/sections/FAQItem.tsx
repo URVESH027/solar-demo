@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
+import { cardEntrance, faqExpand, inViewConfig } from "@/lib/motion-variants";
 
 interface FAQItemProps {
   question: string;
@@ -17,50 +17,83 @@ export default function FAQItem({ question, answer, index }: FAQItemProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.5, ease: easeOutExpo, delay: index * 0.06 }}
+      variants={cardEntrance}
+      initial="hidden"
+      whileInView="visible"
+      viewport={inViewConfig.early}
+      transition={{ delay: index * 0.06 }}
       className="group"
     >
       <div
-        className={`overflow-hidden rounded-sm border transition-all duration-300 ${
-          isOpen
-            ? "border-gold/30 bg-white shadow-[0_4px_16px_rgba(10,22,40,0.04)]"
-            : "border-warm-gray bg-white hover:border-gold/20 hover:shadow-[0_2px_8px_rgba(10,22,40,0.03)]"
-        }`}
+        className="relative overflow-hidden rounded-2xl transition-all duration-400"
+        style={{
+          background: isOpen ? "#ffffff" : "rgba(255,255,255,0.6)",
+          border: isOpen
+            ? "1px solid rgba(212,168,67,0.25)"
+            : "1px solid rgba(226,232,240,0.5)",
+          boxShadow: isOpen
+            ? "0 2px 8px rgba(10,22,40,0.04), 0 8px 24px rgba(10,22,40,0.04), 0 0 0 3px rgba(212,168,67,0.04)"
+            : "0 1px 3px rgba(10,22,40,0.02)",
+        }}
       >
-        {/* Top glow on open */}
-        <div className={`pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/0 to-transparent transition-all duration-500 ${isOpen ? "via-gold/30" : ""}`} />
+        {/* Top accent line — appears on open */}
+        <div className="pointer-events-none absolute top-0 left-0 h-px w-full transition-all duration-500"
+          style={{
+            background: isOpen
+              ? "linear-gradient(90deg, transparent 10%, rgba(212,168,67,0.3) 50%, transparent 90%)"
+              : "linear-gradient(90deg, transparent, rgba(212,168,67,0), transparent)",
+          }}
+        />
+
+        {/* Hover state — non-open items */}
+        {!isOpen && (
+          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-400 group-hover:opacity-100"
+            style={{
+              background: "linear-gradient(180deg, rgba(212,168,67,0.02) 0%, transparent 100%)",
+            }}
+          />
+        )}
+
+        {/* Glass reflection on hover */}
+        {!isOpen && (
+          <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{
+              background: "linear-gradient(165deg, rgba(255,255,255,0.05) 0%, transparent 40%)",
+            }}
+          />
+        )}
 
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex w-full items-center justify-between gap-4 p-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/40 focus-visible:ring-inset md:p-6"
+          className="flex w-full items-center justify-between gap-4 p-5 text-left md:p-6"
+          style={{ cursor: "pointer" }}
           aria-expanded={isOpen}
           aria-controls={answerId}
         >
           <span
-            className={`text-sm font-semibold transition-colors duration-300 md:text-base ${
-              isOpen ? "text-navy" : "text-navy/80"
-            }`}
+            className="text-sm font-semibold transition-colors duration-300 md:text-base"
+            style={{
+              color: isOpen ? "#0A1628" : "rgba(10,22,40,0.8)",
+            }}
           >
             {question}
           </span>
-          <motion.div
-            animate={{ rotate: isOpen ? 45 : 0 }}
-            transition={{ duration: 0.3, ease: easeOutExpo }}
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
-              isOpen
-                ? "bg-gold/10 shadow-[0_0_0_3px_rgba(212,168,67,0.08)]"
-                : "bg-cloud group-hover:bg-gold/10"
-            }`}
+          <div
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-400"
+            style={{
+              background: isOpen ? "rgba(212,168,67,0.1)" : "rgba(241,245,249,0.8)",
+              border: isOpen ? "1px solid rgba(212,168,67,0.15)" : "1px solid transparent",
+              boxShadow: isOpen ? "0 0 0 3px rgba(212,168,67,0.06)" : "none",
+              transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+            }}
           >
             <Plus
-              className={`h-4 w-4 transition-colors duration-300 ${
-                isOpen ? "text-gold" : "text-navy/40"
-              }`}
+              className="h-4 w-4 transition-colors duration-300"
+              style={{
+                color: isOpen ? "#D4A843" : "rgba(10,22,40,0.4)",
+              }}
             />
-          </motion.div>
+          </div>
         </button>
 
         <AnimatePresence initial={false}>
@@ -68,12 +101,16 @@ export default function FAQItem({ question, answer, index }: FAQItemProps) {
             <motion.div
               id={answerId}
               role="region"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: easeOutExpo }}
+              variants={faqExpand}
+              initial="initial"
+              animate="animate"
+              exit="exit"
             >
-              <div className="border-t border-warm-gray/50 px-5 pb-5 pt-4 md:px-6 md:pb-6">
+              <div className="px-5 pb-5 pt-4 md:px-6 md:pb-6"
+                style={{
+                  borderTop: "1px solid rgba(226,232,240,0.4)",
+                }}
+              >
                 <p className="text-sm leading-relaxed text-slate">
                   {answer}
                 </p>

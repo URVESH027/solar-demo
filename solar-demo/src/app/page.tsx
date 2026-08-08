@@ -29,73 +29,73 @@ export default function Home() {
         <Hero />
 
         {/* Hero → ProblemSolution: cloud → cloud */}
-        <SectionConnector from="cloud" to="cloud" height={40} glow={false} />
+        <SectionConnector from="cloud" to="cloud" height={20} glow={false} />
         <SectionReveal variant="slide-up" glow="gold" glowPosition="top">
           <ProblemSolution />
         </SectionReveal>
 
         {/* ProblemSolution → Services: cloud → transparent */}
-        <SectionConnector from="cloud" to="transparent" height={60} />
+        <SectionConnector from="cloud" to="transparent" height={40} />
         <SectionReveal variant="fade" glow="gold" glowPosition="center">
           <Services />
         </SectionReveal>
 
         {/* Services → WhyChoose: transparent → navy */}
-        <SectionConnector from="transparent" to="navy" height={80} />
+        <SectionConnector from="transparent" to="navy" height={60} />
         <SectionReveal variant="scale">
           <WhyChoose />
         </SectionReveal>
 
         {/* WhyChoose → SavingsCalculator: navy → cloud */}
-        <SectionConnector from="navy" to="cloud" height={80} />
+        <SectionConnector from="navy" to="cloud" height={60} />
         <SectionReveal variant="slide-up" glow="gold" glowPosition="center">
           <SavingsCalculator />
         </SectionReveal>
 
         {/* SavingsCalculator → Timeline: cloud → transparent */}
-        <SectionConnector from="cloud" to="transparent" height={60} />
+        <SectionConnector from="cloud" to="transparent" height={40} />
         <SectionReveal variant="mask" glow="gold" glowPosition="top">
           <Timeline />
         </SectionReveal>
 
         {/* Timeline → Projects: transparent → cloud */}
-        <SectionConnector from="transparent" to="cloud" height={60} />
+        <SectionConnector from="transparent" to="cloud" height={40} />
         <SectionReveal variant="fade">
           <Projects />
         </SectionReveal>
 
         {/* Projects → BeforeAfter: cloud → transparent */}
-        <SectionConnector from="cloud" to="transparent" height={60} />
+        <SectionConnector from="cloud" to="transparent" height={40} />
         <SectionReveal variant="slide-up" glow="gold" glowPosition="center">
           <BeforeAfter />
         </SectionReveal>
 
         {/* BeforeAfter → Testimonials: transparent → cloud */}
-        <SectionConnector from="transparent" to="cloud" height={60} />
+        <SectionConnector from="transparent" to="cloud" height={40} />
         <SectionReveal variant="fade" glow="gold" glowPosition="center">
           <Testimonials />
         </SectionReveal>
 
         {/* Testimonials → GoogleReviews: cloud → navy */}
-        <SectionConnector from="cloud" to="navy" height={80} />
+        <SectionConnector from="cloud" to="navy" height={60} />
         <SectionReveal variant="scale">
           <GoogleReviews />
         </SectionReveal>
 
         {/* GoogleReviews → FAQ: navy → transparent */}
-        <SectionConnector from="navy" to="transparent" height={80} />
+        <SectionConnector from="navy" to="transparent" height={60} />
         <SectionReveal variant="slide-up">
           <FAQ />
         </SectionReveal>
 
         {/* FAQ → ContactCTA: transparent → navy */}
-        <SectionConnector from="transparent" to="navy" height={80} />
+        <SectionConnector from="transparent" to="navy" height={60} />
         <SectionReveal variant="fade" glow="gold" glowPosition="center">
           <ContactCTA />
         </SectionReveal>
 
         {/* ContactCTA → Footer: navy → white */}
-        <SectionConnector from="navy" to="white" height={60} />
+        <SectionConnector from="navy" to="white" height={40} />
       </main>
       <Footer />
       <WhatsAppButton />

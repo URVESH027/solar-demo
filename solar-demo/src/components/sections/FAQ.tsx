@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { easeOutExpo } from "@/lib/animations";
+import { fadeLeft, staggerMedium, inViewConfig } from "@/lib/motion-variants";
 import FAQItem from "./FAQItem";
 
 const faqs = [
@@ -40,37 +40,48 @@ const faqs = [
 
 export default function FAQ() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
+  const isInView = useInView(sectionRef, inViewConfig.standard);
 
   return (
-    <section ref={sectionRef} className="relative py-24 md:py-32">
+    <section ref={sectionRef} className="relative py-32 md:py-44">
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, ease: easeOutExpo }}
-          className="mb-14 text-center md:mb-16"
-        >
-          <span className="mb-4 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
-            Common Questions
-          </span>
-          <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
-            Frequently asked questions
-          </h2>
-        </motion.div>
+        {/* Two-column editorial layout */}
+        <div className="flex flex-col gap-16 lg:flex-row lg:gap-20">
+          {/* Left — Editorial header (sticky), fades from left */}
+          <motion.div
+            variants={fadeLeft}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="lg:sticky lg:top-32 lg:max-w-sm lg:self-start"
+          >
+            <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
+              Common Questions
+            </span>
+            <h2 className="mb-6 font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl">
+              Frequently asked questions
+            </h2>
+            <p className="text-base leading-relaxed text-slate">
+              Everything you need to know about solar installation, subsidies, warranties, and maintenance. Can&apos;t find what you&apos;re looking for? Call us directly.
+            </p>
+          </motion.div>
 
-        {/* Accordion */}
-        <div className="mx-auto max-w-3xl">
-          <div className="flex flex-col gap-3">
-            {faqs.map((faq, i) => (
-              <FAQItem
-                key={faq.question}
-                question={faq.question}
-                answer={faq.answer}
-                index={i}
-              />
-            ))}
+          {/* Right — Accordion list, staggered */}
+          <div className="flex-1">
+            <motion.div
+              variants={staggerMedium}
+              initial="hidden"
+              animate={isInView ? "visible" : "hidden"}
+              className="flex flex-col gap-3"
+            >
+              {faqs.map((faq, i) => (
+                <FAQItem
+                  key={faq.question}
+                  question={faq.question}
+                  answer={faq.answer}
+                  index={i}
+                />
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>

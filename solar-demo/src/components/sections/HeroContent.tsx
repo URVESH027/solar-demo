@@ -3,31 +3,14 @@
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { easeOutExpo } from "@/lib/animations";
-
-/* ═══════════════════════════════════════════════════════════
-   CONTAINER — choreographed stagger
-   ═══════════════════════════════════════════════════════════ */
-const container = {
-  hidden: { opacity: 1 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.14,
-      delayChildren: 0.5,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 30, filter: "blur(8px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.8, ease: easeOutExpo },
-  },
-};
+import {
+  heroContainer,
+  heroWord,
+  heroParagraph,
+  ctaHover,
+  ctaSecondaryHover,
+  trustStripItem,
+} from "@/lib/motion-variants";
 
 /* ═══════════════════════════════════════════════════════════
    HEADLINE — word-by-word reveal with clip mask
@@ -40,7 +23,7 @@ const headlineWords = [
 
 function HeadlineReveal() {
   return (
-    <h1 className="font-display text-[44px] font-bold leading-[1.02] tracking-[-0.035em] text-navy sm:text-[54px] md:text-[62px] lg:text-[70px] xl:text-[76px]" style={{ textWrap: "balance" }}>
+    <h1 className="font-display text-[52px] font-bold leading-[1.02] tracking-[-0.035em] text-navy sm:text-[62px] md:text-[72px] lg:text-[80px] xl:text-[88px]" style={{ textWrap: "balance" }}>
       {headlineWords.map((word) => (
         <span
           key={word.text}
@@ -48,13 +31,7 @@ function HeadlineReveal() {
         >
           <motion.span
             className="inline-block"
-            initial={{ y: "110%", rotateX: 40 }}
-            animate={{ y: 0, rotateX: 0 }}
-            transition={{
-              duration: 0.9,
-              ease: easeOutExpo,
-              delay: word.delay,
-            }}
+            variants={heroWord}
             style={{ transformOrigin: "bottom center" }}
           >
             {word.text}
@@ -66,7 +43,7 @@ function HeadlineReveal() {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   CTA BUTTON — premium gold gradient with effects
+   CTA BUTTON — magnetic hover, soft glow, depth, press
    ═══════════════════════════════════════════════════════════ */
 function PremiumCTA({
   label,
@@ -80,11 +57,22 @@ function PremiumCTA({
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
+  // Spotlight position for inner glow
   const spotlightX = useTransform(mouseX, [0, 1], [-50, 150]);
   const spotlightY = useTransform(mouseY, [0, 1], [-50, 150]);
 
   const springX = useSpring(spotlightX, { stiffness: 150, damping: 20 });
   const springY = useSpring(spotlightY, { stiffness: 150, damping: 20 });
+
+  // Magnetic pull — button follows cursor within 8px radius
+  const magneticX = useSpring(
+    useTransform(mouseX, [0, 0.5, 1], [-6, 0, 6]),
+    { stiffness: 300, damping: 20 }
+  );
+  const magneticY = useSpring(
+    useTransform(mouseY, [0, 0.5, 1], [-4, 0, 4]),
+    { stiffness: 300, damping: 20 }
+  );
 
   function handleMouse(e: React.MouseEvent<HTMLAnchorElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -92,18 +80,28 @@ function PremiumCTA({
     mouseY.set((e.clientY - rect.top) / rect.height);
   }
 
+  function handleMouseLeave() {
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  }
+
   if (variant === "secondary") {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, ease: easeOutExpo, delay: 1.1 }}
-      >
-        <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.97 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+      <motion.div variants={heroParagraph}>
+        <motion.div
+          initial="rest"
+          whileHover="hover"
+          whileTap="tap"
+          variants={ctaSecondaryHover}
+        >
           <Link
             href={href}
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded border border-gold/30 bg-transparent px-7 py-3.5 text-sm font-semibold tracking-wide text-gold transition-all duration-300 hover:border-gold/50 hover:bg-gold/5"
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl border border-gold/30 bg-transparent px-7 py-3.5 text-sm font-semibold tracking-wide text-gold transition-all duration-400 hover:border-gold/50 hover:bg-gold/[0.04] hover:shadow-[0_0_20px_rgba(212,168,67,0.12)] active:scale-[0.98]"
           >
+            {/* Inner highlight on hover */}
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-[1px] opacity-0 transition-opacity duration-400 group-hover:opacity-40"
+              style={{ background: "linear-gradient(90deg, transparent 10%, rgba(212,168,67,0.5) 50%, transparent 90%)" }}
+            />
             <span className="relative z-10">{label}</span>
           </Link>
         </motion.div>
@@ -112,33 +110,40 @@ function PremiumCTA({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, ease: easeOutExpo, delay: 0.95 }}
-    >
-      <motion.div whileHover={{ y: -3 }} whileTap={{ scale: 0.96 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
-        <Link
-          href={href}
-          onMouseMove={handleMouse}
-          className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded px-8 py-4 text-sm font-semibold tracking-wide text-navy shadow-gold transition-shadow duration-300 hover:shadow-gold-lg"
-          style={{
-            background: "linear-gradient(135deg, #D4A843 0%, #E8C066 45%, #D4A843 100%)",
-          }}
+    <motion.div variants={heroParagraph}>
+      <motion.div
+        initial="rest"
+        whileHover="hover"
+        whileTap="tap"
+        variants={ctaHover}
+      >
+        <motion.div
+          style={{ x: magneticX, y: magneticY }}
+          className="inline-block"
         >
+          <Link
+            href={href}
+            onMouseMove={handleMouse}
+            onMouseLeave={handleMouseLeave}
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl px-8 py-4 text-sm font-semibold tracking-wide text-navy transition-shadow duration-400"
+            style={{
+              background: "linear-gradient(135deg, #D4A843 0%, #E8C066 45%, #D4A843 100%)",
+              boxShadow: "0 4px 16px rgba(212,168,67,0.3), 0 1px 3px rgba(212,168,67,0.15)",
+            }}
+          >
           {/* Inner highlight (top edge sheen) */}
           <span
-            className="pointer-events-none absolute inset-x-0 top-0 h-[1px] opacity-60"
-            style={{ background: "linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.7) 50%, transparent 90%)" }}
+            className="pointer-events-none absolute inset-x-0 top-0 h-[1px] opacity-50"
+            style={{ background: "linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.8) 50%, transparent 90%)" }}
           />
 
           {/* Soft reflection (subtle inner glow) */}
           <span
             className="pointer-events-none absolute inset-0 opacity-[0.15]"
-            style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 40%)" }}
+            style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.5) 0%, transparent 30%)" }}
           />
 
-          {/* Light sweep on hover */}
+          {/* Light sweep on hover — follows cursor */}
           <motion.span
             className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
             style={{
@@ -146,34 +151,56 @@ function PremiumCTA({
             }}
           />
 
+          {/* Hover glow effect — shadow expansion + inner glow */}
+          <span
+            className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{
+              boxShadow: "0 0 30px rgba(212,168,67,0.35), inset 0 0 20px rgba(212,168,67,0.08)",
+            }}
+          />
+
           <span className="relative z-10">{label}</span>
-          <ArrowRight className="relative z-10 h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+          <motion.span
+            className="relative z-10 inline-flex"
+            whileHover={{ x: 4, rotate: -10 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
+          >
+            <ArrowRight className="h-4 w-4 transition-transform duration-400 group-hover:translate-x-0.5" />
+          </motion.span>
         </Link>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════
-   TRUST STRIP — glass container with animated numbers
+   TRUST STRIP — sequential reveal, one after another
    ═══════════════════════════════════════════════════════════ */
 function TrustStrip() {
   const stats = [
     { value: "700", suffix: "+", label: "Installations" },
     { value: "10", suffix: "+", label: "Years Experience" },
-    { value: "4.9", suffix: "★", label: "Rating" },
+    { value: "4.9", suffix: "\u2605", label: "Rating" },
     { value: "MNRE", suffix: "", label: "Certified" },
   ];
 
   return (
-    <motion.div variants={item} className="mt-4">
-      <div className="glass-subtle inline-flex flex-wrap items-center gap-x-1 gap-y-2 rounded-sm px-1 py-1 sm:gap-x-0">
+    <motion.div variants={heroParagraph} className="mt-8">
+      <div className="glass-subtle inline-flex flex-wrap items-center gap-x-1 gap-y-2 rounded-2xl px-1.5 py-1.5 sm:gap-x-0">
         {stats.map((stat, i) => (
-          <div key={stat.label} className="flex items-center">
+          <motion.div
+            key={stat.label}
+            custom={i}
+            variants={trustStripItem}
+            initial="hidden"
+            animate="visible"
+            className="flex items-center"
+          >
             {i > 0 && (
               <div className="mx-3 hidden h-5 w-px bg-navy/[0.08] sm:block" />
             )}
-            <div className="flex items-center gap-2 px-3 py-2">
+            <div className="flex items-center gap-2 px-3 py-2.5 transition-all duration-300 hover:bg-gold/[0.04] rounded-xl">
               <span className="text-sm font-bold tracking-tight text-navy">
                 {stat.value}
                 <span className="text-gold">{stat.suffix}</span>
@@ -182,7 +209,7 @@ function TrustStrip() {
                 {stat.label}
               </span>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </motion.div>
@@ -195,30 +222,30 @@ function TrustStrip() {
 export default function HeroContent() {
   return (
     <motion.div
-      variants={container}
+      variants={heroContainer}
       initial="hidden"
       animate="visible"
-      className="flex flex-col gap-5 md:gap-7"
+      className="flex flex-col gap-6 md:gap-8"
     >
-      {/* Headline */}
+      {/* Headline — word-by-word */}
       <HeadlineReveal />
 
       {/* Subheadline */}
       <motion.p
-        variants={item}
-        className="max-w-[380px] text-[15px] leading-[1.7] text-slate md:text-base"
+        variants={heroParagraph}
+        className="max-w-[400px] text-[16px] leading-[1.75] text-slate md:text-lg"
       >
         Premium solar installations and panel cleaning services that protect
         your investment for 25 years.
       </motion.p>
 
       {/* CTA Buttons */}
-      <motion.div variants={item} className="flex flex-wrap items-center gap-4 pt-1">
+      <motion.div variants={heroParagraph} className="flex flex-wrap items-center gap-4 pt-2">
         <PremiumCTA label="Get Free Quote" href="#contact" variant="primary" />
         <PremiumCTA label="See Our Work" href="#projects" variant="secondary" />
       </motion.div>
 
-      {/* Trust Strip */}
+      {/* Trust Strip — sequential reveal */}
       <TrustStrip />
     </motion.div>
   );
