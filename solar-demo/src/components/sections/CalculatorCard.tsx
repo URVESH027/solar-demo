@@ -42,7 +42,6 @@ function AnimatedNumber({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const motionVal = useMotionValue(0);
-  const prevValue = useRef(value);
 
   useEffect(() => {
     const controls = animate(motionVal, value, {
@@ -55,7 +54,6 @@ function AnimatedNumber({
         }
       },
     });
-    prevValue.current = value;
     return controls.stop;
   }, [value, motionVal, prefix, suffix, decimals]);
 
@@ -79,19 +77,8 @@ const resultItems = [
     }),
   },
   {
-    key: "monthlySavings" as const,
-    icon: IndianRupee,
-    label: "Monthly Savings",
-    format: (v: number) => ({
-      value: v,
-      prefix: "\u20B9",
-      suffix: "",
-      decimals: 0,
-    }),
-  },
-  {
     key: "yearlySavings" as const,
-    icon: TrendingUp,
+    icon: IndianRupee,
     label: "Yearly Savings",
     format: (v: number) => ({
       value: v,
@@ -100,6 +87,17 @@ const resultItems = [
       decimals: 0,
     }),
     primary: true,
+  },
+  {
+    key: "monthlySavings" as const,
+    icon: TrendingUp,
+    label: "Monthly Savings",
+    format: (v: number) => ({
+      value: v,
+      prefix: "\u20B9",
+      suffix: "",
+      decimals: 0,
+    }),
   },
   {
     key: "totalSavings" as const,
@@ -146,43 +144,20 @@ export default function CalculatorCard({ results }: CalculatorCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{ duration: 0.6, ease: ease.standard, delay: 0.2 }}
-      className="relative overflow-hidden rounded-3xl bg-white p-6 md:p-8"
-      style={{
-        border: "1px solid rgba(226,232,240,0.6)",
-        boxShadow: "0 1px 3px rgba(10,22,40,0.03), 0 4px 12px rgba(10,22,40,0.04), 0 12px 32px rgba(10,22,40,0.03)",
-      }}
+      className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 md:p-8"
     >
-      {/* Top gold accent line */}
-      <div className="pointer-events-none absolute top-0 left-0 h-px w-full"
-        style={{
-          background: "linear-gradient(90deg, transparent 10%, rgba(212,168,67,0.25) 50%, transparent 90%)",
-        }}
-      />
+      <div className="pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
-      {/* Surface sheen — premium depth */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[30%]"
-        style={{
-          background: "linear-gradient(180deg, rgba(241,245,249,0.4) 0%, transparent 100%)",
-        }}
-      />
-
-      {/* Glass reflection sweep */}
-      <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-700"
-        style={{
-          background: "linear-gradient(165deg, rgba(255,255,255,0.04) 0%, transparent 40%)",
-        }}
-      />
-
-      <h3 className="mb-7 font-display text-lg font-bold text-navy">
+      <h3 className="mb-6 font-display text-lg font-bold text-white">
         Your Estimate
       </h3>
 
-      {/* Result cards — stagger in after card is visible */}
+      {/* Result grid */}
       <motion.div
         variants={calculatorResults.container}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
-        className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-3"
+        className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3"
       >
         {resultItems.map((item) => {
           const formatted = item.format(results[item.key]);
@@ -192,61 +167,28 @@ export default function CalculatorCard({ results }: CalculatorCardProps) {
             <motion.div
               key={item.key}
               variants={calculatorResults.item}
-              initial="rest"
-              whileHover="hover"
-              whileTap="tap"
-              className="group relative overflow-hidden rounded-2xl p-4 transition-all duration-400"
-              style={{
-                background: isPrimary
-                  ? "linear-gradient(135deg, rgba(241,245,249,0.8) 0%, rgba(212,168,67,0.04) 100%)"
-                  : "rgba(241,245,249,0.5)",
-                border: isPrimary
-                  ? "1px solid rgba(212,168,67,0.15)"
-                  : "1px solid rgba(226,232,240,0.3)",
-              }}
+              className={`group relative overflow-hidden rounded-2xl p-4 transition-all duration-400 ${
+                isPrimary
+                  ? "col-span-2 bg-gold/[0.08] border border-gold/15 lg:col-span-1"
+                  : "bg-white/[0.03] border border-white/[0.06]"
+              }`}
             >
-              {/* Hover background shift */}
-              <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-400 group-hover:opacity-100 rounded-2xl"
-                style={{
-                  background: "linear-gradient(180deg, rgba(212,168,67,0.05) 0%, rgba(241,245,249,0.8) 100%)",
-                }}
-              />
-
-              {/* Hover glow — soft gold */}
-              <div
-                className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-400 group-hover:opacity-100"
-                style={{
-                  boxShadow: "0 4px 20px rgba(212,168,67,0.12), inset 0 0 20px rgba(212,168,67,0.03)",
-                }}
-              />
-
-              {/* Hover top accent */}
-              <div className="pointer-events-none absolute top-0 left-0 h-px w-full opacity-0 transition-opacity duration-400 group-hover:opacity-100"
-                style={{
-                  background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.2), transparent)",
-                }}
-              />
-
               <div className="relative">
-                {/* Icon with independent animation */}
                 <div
-                  className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-400 group-hover:scale-105 group-hover:shadow-[0_0_0_3px_rgba(212,168,67,0.06)]"
-                  style={{
-                    background: isPrimary ? "rgba(212,168,67,0.08)" : "#ffffff",
-                    border: isPrimary ? "1px solid rgba(212,168,67,0.15)" : "1px solid rgba(226,232,240,0.3)",
-                    boxShadow: "0 1px 3px rgba(10,22,40,0.03)",
-                  }}
+                  className={`mb-2 flex h-8 w-8 items-center justify-center rounded-lg ${
+                    isPrimary ? "bg-gold/10 border border-gold/15" : "bg-white/[0.05] border border-white/[0.06]"
+                  }`}
                 >
-                  <div className="transition-all duration-400 group-hover:drop-shadow-[0_0_6px_rgba(212,168,67,0.25)]">
-                    <item.icon className={`h-4 w-4 transition-all duration-400 group-hover:scale-110 ${isPrimary ? "text-gold" : "text-gold"}`} />
-                  </div>
+                  <item.icon className={`h-3.5 w-3.5 ${isPrimary ? "text-gold" : "text-white/40"}`} />
                 </div>
 
-                <div className="mb-1 text-[11px] font-medium uppercase tracking-[0.06em] text-muted transition-colors duration-400 group-hover:text-slate">
+                <div className="mb-1 text-[10px] font-medium uppercase tracking-[0.06em] text-white/30">
                   {item.label}
                 </div>
 
-                <div className={`font-display text-xl font-bold text-navy transition-colors duration-400 group-hover:text-navy md:text-2xl ${isPrimary ? "text-gold-dark" : ""}`}>
+                <div className={`font-display font-bold ${
+                  isPrimary ? "text-2xl text-gold md:text-3xl" : "text-lg text-white/80"
+                }`}>
                   <AnimatedNumber
                     value={formatted.value}
                     prefix={formatted.prefix}

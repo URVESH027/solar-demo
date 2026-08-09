@@ -66,59 +66,73 @@ export default function Testimonials() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, inViewConfig.standard);
 
+  const dominant = testimonials[0];
+  const rest = testimonials.slice(1);
+
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-cloud py-32 md:py-44 section-identity-testimonials"
+      className="relative overflow-hidden bg-cloud py-28 md:py-36"
     >
-      {/* Background glow — soft centered */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[180px]"
-        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.04) 0%, transparent 50%)" }}
-      />
-
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header — left-aligned for editorial feel */}
+        {/* Section Header */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="mb-16 md:mb-20"
+          className="mb-14 md:mb-16"
         >
-          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
+          <span className="mb-4 inline-block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate/60">
             What Clients Say
           </span>
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
-              Trusted by hundreds of homeowners
-            </h2>
-            <p className="max-w-sm text-sm leading-relaxed text-slate lg:text-right">
-              Real results from real customers across India.
-            </p>
-          </div>
+          <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
+            Trusted by hundreds of homeowners
+          </h2>
         </motion.div>
 
-        {/* Masonry Grid with varied card sizes */}
-        <motion.div
-          variants={staggerSlow}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          className="columns-1 gap-6 sm:columns-2 lg:columns-3"
-        >
-          {testimonials.map((t, i) => (
-            <div key={t.name} className="mb-6 break-inside-avoid">
-              <TestimonialCard
-                name={t.name}
-                location={t.location}
-                projectType={t.projectType}
-                review={t.review}
-                rating={t.rating}
-                image={t.image}
-                index={i}
-                featured={i === 0 || i === 3}
-              />
-            </div>
-          ))}
-        </motion.div>
+        {/* Dominant testimonial + smaller grid */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+          {/* Dominant — large featured */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+            className="lg:w-[45%]"
+          >
+            <TestimonialCard
+              name={dominant.name}
+              location={dominant.location}
+              projectType={dominant.projectType}
+              review={dominant.review}
+              rating={dominant.rating}
+              image={dominant.image}
+              index={0}
+              featured
+            />
+          </motion.div>
+
+          {/* Smaller grid */}
+          <motion.div
+            variants={staggerSlow}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="flex-1 grid gap-5 sm:grid-cols-2"
+          >
+            {rest.map((t, i) => (
+              <div key={t.name}>
+                <TestimonialCard
+                  name={t.name}
+                  location={t.location}
+                  projectType={t.projectType}
+                  review={t.review}
+                  rating={t.rating}
+                  image={t.image}
+                  index={i + 1}
+                />
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -56,12 +56,11 @@ function calculateResults(
   };
 }
 
-/* ─── Trust items below results ─── */
 const trustItems = [
   { icon: ShieldCheck, label: "25-Year Warranty" },
   { icon: Zap, label: "Tier-1 Panels" },
   { icon: Clock, label: "5-7 Year ROI" },
-  { icon: Leaf, label: "1.5T CO₂ Saved/Year" },
+  { icon: Leaf, label: "1.5T CO\u2082 Saved/Year" },
 ];
 
 export default function SavingsCalculator() {
@@ -73,17 +72,14 @@ export default function SavingsCalculator() {
   const [roofType, setRoofType] = useState("flat");
   const [city, setCity] = useState("delhi");
 
-  // Progressive reveal — show results after first interaction
   const [hasInteracted, setHasInteracted] = useState(false);
   const [lastChangedField, setLastChangedField] = useState<string | null>(null);
 
-  // Auto-reveal after 2s even without interaction
   useEffect(() => {
     const timer = setTimeout(() => setHasInteracted(true), 2000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Clear field highlight after animation
   useEffect(() => {
     if (lastChangedField) {
       const timer = setTimeout(() => setLastChangedField(null), 600);
@@ -120,35 +116,31 @@ export default function SavingsCalculator() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden bg-cloud py-32 md:py-44 section-identity-calculator"
+      className="relative overflow-hidden bg-navy py-28 md:py-36"
     >
-      {/* Background glow — centered gold */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 h-[700px] w-[700px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[180px]"
-        style={{ background: "radial-gradient(circle, rgba(212,168,67,0.05) 0%, transparent 50%)" }}
+        style={{ background: "radial-gradient(circle, rgba(212,168,74,0.05) 0%, transparent 50%)" }}
       />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-12">
-        {/* Section Header */}
+        {/* Section Header — minimal */}
         <motion.div
           variants={fadeUp}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
-          className="mb-16 text-center md:mb-20"
+          className="mb-14 md:mb-16"
         >
-          <span className="mb-5 inline-block text-[11px] font-medium uppercase tracking-[0.12em] text-slate">
+          <span className="mb-4 inline-block text-[10px] font-semibold uppercase tracking-[0.14em] text-white/40">
             Calculate Savings
           </span>
-          <h2 className="mx-auto max-w-2xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-navy md:text-4xl lg:text-5xl" style={{ textWrap: "balance" }}>
+          <h2 className="max-w-xl font-display text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-4xl lg:text-5xl">
             See how much you could save
           </h2>
-          <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-slate">
-            Adjust the parameters below to get a personalized estimate for your solar investment.
-          </p>
         </motion.div>
 
-        {/* Layout — Inputs as sleek sidebar, Results as showcase */}
-        <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
-          {/* Left — Inputs (narrower sidebar), slides from left */}
+        {/* Side-by-side layout */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+          {/* Left — Inputs */}
           <motion.div
             variants={calculatorReveal.panel}
             initial="hidden"
@@ -156,14 +148,13 @@ export default function SavingsCalculator() {
             transition={{ delay: 0.15 }}
             className="w-full lg:max-w-sm"
           >
-            <div className="relative overflow-hidden rounded-3xl border border-warm-gray/60 bg-white p-6 shadow-[0_2px_12px_rgba(10,22,40,0.04),0_8px_32px_rgba(10,22,40,0.03)] md:p-8">
-              {/* Top glow */}
+            <div className="relative overflow-hidden rounded-3xl border border-white/[0.06] bg-white/[0.03] p-6 md:p-8">
               <div className="pointer-events-none absolute top-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
 
               {/* Bill Slider */}
-              <div className="mb-8">
-                <div className="mb-5 flex items-baseline justify-between">
-                  <label className="text-sm font-semibold text-navy">
+              <div className="mb-7">
+                <div className="mb-4 flex items-baseline justify-between">
+                  <label className="text-sm font-semibold text-white/80">
                     Monthly Bill
                   </label>
                   <motion.span
@@ -185,9 +176,12 @@ export default function SavingsCalculator() {
                     step={500}
                     value={bill}
                     onChange={(e) => handleBillChange(Number(e.target.value))}
-                    className={`slider-gold h-2 w-full cursor-pointer appearance-none rounded-full bg-warm-gray ${lastChangedField === "bill" ? "input-highlight" : ""}`}
+                    className={`h-2 w-full cursor-pointer appearance-none rounded-full ${lastChangedField === "bill" ? "input-highlight" : ""}`}
+                    style={{
+                      background: `linear-gradient(to right, #D4A843 0%, #D4A843 ${((bill - 500) / 24500) * 100}%, rgba(255,255,255,0.08) ${((bill - 500) / 24500) * 100}%, rgba(255,255,255,0.08) 100%)`,
+                    }}
                   />
-                  <div className="mt-3 flex justify-between text-[11px] text-muted">
+                  <div className="mt-3 flex justify-between text-[11px] text-white/30">
                     <span>{"\u20B9"}500</span>
                     <span>{"\u20B9"}25,000</span>
                   </div>
@@ -195,63 +189,59 @@ export default function SavingsCalculator() {
               </div>
 
               {/* Property Type */}
-              <div className="mb-8">
-                <label className="mb-3 block text-sm font-semibold text-navy">
+              <div className="mb-7">
+                <label className="mb-3 block text-sm font-semibold text-white/80">
                   Property Type
                 </label>
                 <div className="flex gap-3">
                   {[
                     { value: "home", label: "Home", icon: Sun },
-                    {
-                      value: "commercial",
-                      label: "Commercial",
-                      icon: Building2,
-                    },
+                    { value: "commercial", label: "Commercial", icon: Building2 },
                   ].map((opt) => (
                     <button
                       key={opt.value}
                       onClick={() => handlePropertyChange(opt.value)}
                       className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-300 active:scale-[0.98] ${
                         propertyType === opt.value
-                          ? "border-gold bg-gold/5 text-navy shadow-[0_0_0_3px_rgba(212,168,67,0.08)]"
-                          : "border-warm-gray/60 bg-white text-slate hover:border-gold/30 hover:bg-gold/[0.02]"
-                      } ${lastChangedField === "property" && propertyType === opt.value ? "input-highlight" : ""}`}
+                          ? "border-gold/30 bg-gold/10 text-gold"
+                          : "border-white/[0.06] bg-white/[0.03] text-white/50 hover:border-white/[0.12]"
+                      }`}
                     >
-                      <opt.icon className="h-4 w-4 transition-transform duration-300" style={{ transform: propertyType === opt.value ? "scale(1.1)" : "scale(1)" }} />
+                      <opt.icon className="h-4 w-4" />
                       {opt.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Roof Type + City row */}
+              {/* Roof + City */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-2.5 block text-sm font-semibold text-navy">
+                  <label className="mb-2.5 block text-sm font-semibold text-white/80">
                     Roof Type
                   </label>
                   <div className="relative">
                     <select
                       value={roofType}
                       onChange={(e) => handleRoofChange(e.target.value)}
-                      className={`input-premium w-full pr-10 ${lastChangedField === "roof" ? "input-highlight" : ""}`}
+                      className="w-full appearance-none rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 pr-10 text-sm text-white/70 transition-all duration-300 hover:border-white/[0.12] focus:border-gold/30 focus:outline-none"
                     >
                       <option value="flat">Flat</option>
-                      <option value="sloped">Sloped / Tiled</option>
-                      <option value="metal">Metal Sheet</option>
+                      <option value="sloped">Sloped</option>
+                      <option value="metal">Metal</option>
                     </select>
-                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-white/30" />
                   </div>
                 </div>
                 <div>
-                  <label className="mb-2.5 block text-sm font-semibold text-navy">
+                  <label className="mb-2.5 block text-sm font-semibold text-white/80">
                     City
                   </label>
                   <div className="relative">
                     <select
                       value={city}
                       onChange={(e) => handleCityChange(e.target.value)}
-                      className={`input-premium w-full pr-10 ${lastChangedField === "city" ? "input-highlight" : ""}`}
+                      className="w-full appearance-none rounded-xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 pr-10 text-sm text-white/70 transition-all duration-300 hover:border-white/[0.12] focus:border-gold/30 focus:outline-none"
                     >
                       <option value="delhi">Delhi NCR</option>
                       <option value="mumbai">Mumbai</option>
@@ -260,16 +250,16 @@ export default function SavingsCalculator() {
                       <option value="hyderabad">Hyderabad</option>
                       <option value="pune">Pune</option>
                       <option value="ahmedabad">Ahmedabad</option>
-                      <option value="other">Other City</option>
+                      <option value="other">Other</option>
                     </select>
-                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted" />
+                    <ChevronDown className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-white/30" />
                   </div>
                 </div>
               </div>
             </div>
           </motion.div>
 
-          {/* Energy Flow Connector — visible after interaction */}
+          {/* Energy flow connector */}
           <AnimatePresence>
             {hasInteracted && (
               <motion.div
@@ -277,14 +267,14 @@ export default function SavingsCalculator() {
                 animate={{ opacity: 1, scaleX: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className="hidden lg:flex lg:w-10 lg:items-center lg:justify-center"
+                className="hidden lg:flex lg:w-8 lg:items-center lg:justify-center"
               >
-                <div className="energy-flow h-px w-full" />
+                <div className="h-px w-full bg-gradient-to-r from-gold/0 via-gold/30 to-gold/0" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Mobile energy flow — vertical */}
+          {/* Mobile energy flow */}
           <AnimatePresence>
             {hasInteracted && (
               <motion.div
@@ -294,12 +284,12 @@ export default function SavingsCalculator() {
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="flex justify-center lg:hidden"
               >
-                <div className="energy-flow-vertical h-12 w-px" />
+                <div className="h-10 w-px bg-gradient-to-b from-gold/0 via-gold/30 to-gold/0" />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Right — Results (larger showcase), progressive reveal */}
+          {/* Right — Results */}
           <motion.div
             variants={calculatorReveal.results}
             initial="hidden"
@@ -308,14 +298,14 @@ export default function SavingsCalculator() {
           >
             <CalculatorCard results={results} />
 
-            {/* Trust Reinforcement — below results, sequential reveal */}
+            {/* Trust items */}
             <AnimatePresence>
               {hasInteracted && (
                 <motion.div
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:gap-x-8"
+                  className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 md:gap-x-8"
                 >
                   {trustItems.map((item, i) => (
                     <motion.div
@@ -324,9 +314,9 @@ export default function SavingsCalculator() {
                       variants={calculatorTrustItem}
                       initial="hidden"
                       animate="visible"
-                      className="flex items-center gap-2 text-xs text-muted"
+                      className="flex items-center gap-2 text-[11px] text-white/30"
                     >
-                      <item.icon className="h-3.5 w-3.5 text-gold/60" />
+                      <item.icon className="h-3 w-3 text-gold/50" />
                       <span>{item.label}</span>
                     </motion.div>
                   ))}
@@ -337,34 +327,31 @@ export default function SavingsCalculator() {
         </div>
       </div>
 
-      {/* Custom slider styles */}
+      {/* Custom slider thumb styles */}
       <style jsx global>{`
-        .slider-gold::-webkit-slider-thumb {
+        input[type="range"]::-webkit-slider-thumb {
           -webkit-appearance: none;
           appearance: none;
-          width: 24px;
-          height: 24px;
+          width: 22px;
+          height: 22px;
           border-radius: 50%;
-          background: #d4a843;
+          background: #D4A843;
           cursor: pointer;
-          border: 3px solid #ffffff;
-          box-shadow: 0 2px 8px rgba(212, 168, 67, 0.35), 0 0 0 1px rgba(212, 168, 67, 0.1);
+          border: 3px solid #071A2B;
+          box-shadow: 0 2px 8px rgba(212,168,74,0.35);
           transition: box-shadow 0.2s ease;
         }
-        .slider-gold::-webkit-slider-thumb:hover {
-          box-shadow: 0 2px 16px rgba(212, 168, 67, 0.55), 0 0 0 3px rgba(212, 168, 67, 0.1);
+        input[type="range"]::-webkit-slider-thumb:hover {
+          box-shadow: 0 2px 16px rgba(212,168,74,0.55), 0 0 0 3px rgba(212,168,74,0.1);
         }
-        .slider-gold::-moz-range-thumb {
-          width: 24px;
-          height: 24px;
+        input[type="range"]::-moz-range-thumb {
+          width: 22px;
+          height: 22px;
           border-radius: 50%;
-          background: #d4a843;
+          background: #D4A843;
           cursor: pointer;
-          border: 3px solid #ffffff;
-          box-shadow: 0 2px 8px rgba(212, 168, 67, 0.35), 0 0 0 1px rgba(212, 168, 67, 0.1);
-        }
-        .slider-gold::-moz-range-thumb:hover {
-          box-shadow: 0 2px 16px rgba(212, 168, 67, 0.55), 0 0 0 3px rgba(212, 168, 67, 0.1);
+          border: 3px solid #071A2B;
+          box-shadow: 0 2px 8px rgba(212,168,74,0.35);
         }
       `}</style>
     </section>
